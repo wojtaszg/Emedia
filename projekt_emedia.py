@@ -167,11 +167,10 @@ class Bmp:
 
     def fourier_transform(self):
         """
-        Metoda wykonująca transformatę Fouriera na podanym obrazie.
+        Metoda wykonująca dyskretną transformatę Fouriera na podanym obrazie.
         Metoda wyświetla oryginalny obraz, monochromatyczny oraz jego moduł widma i fazę.
         """
         plt.figure(figsize=(8.4 * 5, 6.8 * 5))
-        #img_c = cv2.imread(self.file, -1)
         img_c = Image.open(self.file)
         img_c1 = cv2.imread(self.file, 0)
         img_c2 = np.fft.fft2(img_c1)
