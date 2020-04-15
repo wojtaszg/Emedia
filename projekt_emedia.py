@@ -8,6 +8,12 @@ from PIL import Image
 
 class Bmp:
     def __init__(self, obraz):
+        """
+        :param obraz:
+         Konstruktor klasy.
+         Odczytuje informacje zawarte w nagłówku pliku i DIB oraz
+         zapisuje je do atrybutów klasy
+        """
         if os.path.exists(obraz):
             self.file = obraz
             bmp = open(self.file, 'rb')
@@ -52,6 +58,10 @@ class Bmp:
             bmp.close()
 
     def header(self):
+        """
+        Metoda wyświetlająca informacje o obrazie odczytane
+        z nagłówka pliku oraz nagłówka DIB
+        """
         #bmp file header
         print('Type:' + self.header_type)
         print('Size: ' + str(self.file_size))
@@ -92,6 +102,11 @@ class Bmp:
 
 
     def colour_table(self):
+        """
+        Metoda odczytująca zawartość tablicy kolorów,
+        wyświetlająca obraz utworzony z odczytanych kolorów oraz zapisująca go.
+        Tablica kolorów występuje tylko dla głębi bitowej <= 8
+        """
         if self.bits_per_pixel <= 8:
             x = self.number_of_colours
             colours = []
@@ -120,6 +135,11 @@ class Bmp:
 
 
     def icc_profile(self):
+        """
+        Metoda odczytująca zawartość profilu kolorów ICC,
+        wyświetlająca obraz utworzony z odczytanych kolorów oraz zapisująca go.
+        Profil kolorów ICC występuje tylko w obrazach BMP z nagłówkiem DIB BITMAPV5HEADER
+        """
         colours_profile = []
         bmp = open(self.file, 'rb')
         bmp.seek(self.icc_data, 0)
@@ -146,6 +166,10 @@ class Bmp:
 
 
     def fourier_transform(self):
+        """
+        Metoda wykonująca transformatę Fouriera na podanym obrazie.
+        Metoda wyświetla oryginalny obraz, monochromatyczny oraz jego moduł widma i fazę.
+        """
         plt.figure(figsize=(8.4 * 5, 6.8 * 5))
         #img_c = cv2.imread(self.file, -1)
         img_c = Image.open(self.file)
@@ -160,6 +184,12 @@ class Bmp:
         plt.show()
 
     def anonymisation(self):
+        """
+        Metoda anonimizująca podany plik BMP.
+        Anonimizacja polegała na zastępowaniu informacji,
+        które nie było niezbędne do działania zerowymi bajtami
+        oraz usuwaniu bajtów znajdujących się poza obrazem.
+        """
         x = self.number_of_colours
         row = int(np.ceil(((self.bits_per_pixel * self.width) / 32) * 4))
         if row % 4 != 0:
