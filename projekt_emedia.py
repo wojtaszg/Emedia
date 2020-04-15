@@ -175,11 +175,11 @@ class Bmp:
         img_c1 = cv2.imread(self.file, 0)
         img_c2 = np.fft.fft2(img_c1)
         img_c3 = np.fft.fftshift(img_c2)
-        img_xd = np.angle(img_c3)
+        img_xd = np.angle(img_c2)
         plt.subplot(141), plt.imshow(img_c), plt.title("Oryginalny obraz")
         plt.subplot(142), plt.imshow(img_c1, "gray"), plt.title("Obraz czarnobiały")
-        plt.subplot(143), plt.imshow(np.log(1 + np.abs(img_c3)), "gray"), plt.title("Moduł widma")
-        plt.subplot(144), plt.imshow(np.log(1 + np.abs(img_xd)), "gray"), plt.title("Faza")
+        plt.subplot(143), plt.imshow(np.log(np.abs(img_c3)), "gray"), plt.title("Moduł widma")
+        plt.subplot(144), plt.imshow(img_xd, "gray"), plt.title("Faza")
         plt.show()
 
     def anonymisation(self):
@@ -255,7 +255,7 @@ class Bmp:
         img.show()
 
 
-a = Bmp("land.bmp")
+a = Bmp("bmp_v5.bmp")
 a.header()
 if a.dib_header_size == 124:
     a.icc_profile()
