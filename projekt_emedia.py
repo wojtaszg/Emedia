@@ -140,29 +140,30 @@ class Bmp:
         wyświetlająca obraz utworzony z odczytanych kolorów oraz zapisująca go.
         Profil kolorów ICC występuje tylko w obrazach BMP z nagłówkiem DIB BITMAPV5HEADER
         """
-        colours_profile = []
-        bmp = open(self.file, 'rb')
-        bmp.seek(self.icc_data, 0)
-        x = int(self.icc_size / 4)
-        for i in range(x):
-            re = int(struct.unpack('B', bmp.read(1))[0])
-            gr = int(struct.unpack('B', bmp.read(1))[0])
-            bl = int(struct.unpack('B', bmp.read(1))[0])
-            # al = int(struct.unpack('B', bmp.read(1))[0])
-            colours_profile.append((re, gr, bl))
-        bmp.close()
-        colours = (np.array(colours_profile)).astype(np.uint8)
-        title = "ICC Profile"
-        # creating bar image
-        cols = len(colours)
-        rows = max([1, int(cols / 2.5)])
-        # Create color Array
-        colours_data = np.tile(colours, (rows, 1)).reshape(rows, cols, 3)
-        # Create Image from Array
-        colours_img = Image.fromarray(colours_data, 'RGB')
-        # saving image
-        colours_img.save("{}.bmp".format(title))
-        colours_img.show()
+        if self.icc_data != 0:
+            colours_profile = []
+            bmp = open(self.file, 'rb')
+            bmp.seek(self.icc_data, 0)
+            x = int(self.icc_size / 4)
+            for i in range(x):
+                re = int(struct.unpack('B', bmp.read(1))[0])
+                gr = int(struct.unpack('B', bmp.read(1))[0])
+                bl = int(struct.unpack('B', bmp.read(1))[0])
+                # al = int(struct.unpack('B', bmp.read(1))[0])
+                colours_profile.append((re, gr, bl))
+            bmp.close()
+            colours = (np.array(colours_profile)).astype(np.uint8)
+            title = "ICC Profile"
+            # creating bar image
+            cols = len(colours)
+            rows = max([1, int(cols / 2.5)])
+            # Create color Array
+            colours_data = np.tile(colours, (rows, 1)).reshape(rows, cols, 3)
+            # Create Image from Array
+            colours_img = Image.fromarray(colours_data, 'RGB')
+            # saving image
+            colours_img.save("{}.bmp".format(title))
+            colours_img.show()
 
 
     def fourier_transform(self):
@@ -244,7 +245,7 @@ class Bmp:
         else:
             file_out.write(file_in.read(self.raw_image_size))
         #icc profile
-        if self.dib_header_size == 124:
+        if self.dib_header_size == 124 and self.icc_data != 0:
             file_in.seek(self.icc_data)
             file_out.write(file_in.read(self.icc_size))
         file_out.close()
@@ -255,7 +256,7 @@ class Bmp:
         img.show()
 
 
-a = Bmp("land.bmp")
+a = Bmp("obraz_v5.bmp")
 a.header()
 if a.dib_header_size == 124:
     a.icc_profile()
